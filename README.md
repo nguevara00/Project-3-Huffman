@@ -4,7 +4,7 @@
 ## Student Information
 **Name:** Nick Guevara  
 **Student ID:** 002-85-1971
-**Repository:** [Link to your repository]
+**Repository:** https://github.com/nguevara00/Project-3-Huffman.git
 
 ## Collaboration & Sources
 - This project is my own work, but I asked for assistance from ChatGPT for examples on filesystem syntax, and to help visualize the tokenization logic. I wrote the code myself. 
