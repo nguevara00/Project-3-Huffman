@@ -24,6 +24,5 @@
 
 ## Testing & Status
 - **Status:** Scanner successfully tokenizes text files into `.tokens` files in `input_output/`.  
-- **Testing:**  currently testing on blue.
-
+- **Testing:**  Using the scripts on blue, the program successfully compiles, runs, and produces a valid .tokens output. Diff on the tokens file and the reference tokens file returns no output, so the program is successful.
 - **Known Issues:** The sample input file included a non-ASCII apostrophe, so it is ignored per the specification and the Poe's is tokenized as "poe", "s".
