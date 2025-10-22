@@ -1,43 +1,38 @@
-//
-// Created by Ali Kooshesh on 9/27/25.
-//
-
 #include <iostream>
 #include <filesystem>
 #include <fstream>
 #include <vector>
 #include "utils.hpp"
 
-
-void exitOnError(error_type error, const std::string &entityName = "") {
+void exitOnError(error_type error, const std::string& entityName = "") {
     switch (error) {
-        case NO_ERROR:
-            // do nothing
-            return;
+    case NO_ERROR:
+        // do nothing
+        return;
 
-        case FILE_NOT_FOUND:
-            std::cerr << "Error: File " << entityName << " doesn't exist. Terminating...\n";
-            exit(FILE_NOT_FOUND);
+    case FILE_NOT_FOUND:
+        std::cerr << "Error: File " << entityName << " doesn't exist. Terminating...\n";
+        exit(FILE_NOT_FOUND);
 
-        case UNABLE_TO_OPEN_FILE:
-            std::cerr << "Error: Unable to open '" << entityName << "'. Terminating...\n";
-            exit(UNABLE_TO_OPEN_FILE);
+    case UNABLE_TO_OPEN_FILE:
+        std::cerr << "Error: Unable to open '" << entityName << "'. Terminating...\n";
+        exit(UNABLE_TO_OPEN_FILE);
 
-        case DIR_NOT_FOUND:
-            std::cerr << "Error: Directory " << entityName << " doesn't exist. Terminating...\n";
-            exit(DIR_NOT_FOUND);
+    case DIR_NOT_FOUND:
+        std::cerr << "Error: Directory " << entityName << " doesn't exist. Terminating...\n";
+        exit(DIR_NOT_FOUND);
 
-        case UNABLE_TO_OPEN_FILE_FOR_WRITING:
-            std::cerr << "Error: Unable to open " << entityName << " for writing. Terminating...\n";
-            exit(UNABLE_TO_OPEN_FILE_FOR_WRITING);
+    case UNABLE_TO_OPEN_FILE_FOR_WRITING:
+        std::cerr << "Error: Unable to open " << entityName << " for writing. Terminating...\n";
+        exit(UNABLE_TO_OPEN_FILE_FOR_WRITING);
 
-        default:
-            std::cerr << "Error: Unknown error type. Terminating...\n";
-            exit(ERR_TYPE_NOT_FOUND);
+    default:
+        std::cerr << "Error: Unknown error type. Terminating...\n";
+        exit(ERR_TYPE_NOT_FOUND);
     }
 }
 
-error_type directoryExists(const std::string &name) {
+error_type directoryExists(const std::string& name) {
 
     if (!std::filesystem::is_directory(name)) {
         return DIR_NOT_FOUND;
@@ -45,7 +40,7 @@ error_type directoryExists(const std::string &name) {
     return NO_ERROR;
 }
 
-error_type regularFileExists(const std::string &name) {
+error_type regularFileExists(const std::string& name) {
 
     if (!std::filesystem::is_regular_file(name)) {
         return FILE_NOT_FOUND;
@@ -53,9 +48,9 @@ error_type regularFileExists(const std::string &name) {
     return NO_ERROR;
 }
 
-error_type regularFileExistsAndIsAvailable(const std::string &filename) {
+error_type regularFileExistsAndIsAvailable(const std::string& filename) {
 
-    if (error_type return_value; (return_value = regularFileExists(filename)) != NO_ERROR ) {
+    if (error_type return_value; (return_value = regularFileExists(filename)) != NO_ERROR) {
         return return_value;
     }
 
@@ -97,7 +92,7 @@ error_type canOpenForWriting(const std::string& filename) {
 }
 
 error_type writeVectorToFile(const std::string& filename,
-                       const std::vector<std::string>& data) {
+    const std::vector<std::string>& data) {
     // Open "fileName" for writing (truncating the file if it already exists).
     // If the file is opened successfully, write each element of "data"
     // to it, placing one element on each line.
@@ -117,4 +112,3 @@ error_type writeVectorToFile(const std::string& filename,
 
     return NO_ERROR;
 }
-

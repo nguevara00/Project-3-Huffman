@@ -20,13 +20,13 @@ enum error_type {
 };
 
 void exitOnError(error_type error, const std::string& entityName);
-error_type regularFileExistsAndIsAvailable(const std::string &fileName);
-error_type fileExists(const std::string &name);
-error_type directoryExists(const std::string &name);
-error_type regularFileExists(const std::string &name);
+error_type regularFileExistsAndIsAvailable(const std::string& fileName);
+//rror_type fileExists(const std::string& name);
+error_type directoryExists(const std::string& name);
+error_type regularFileExists(const std::string& name);
 std::string baseNameWithoutTxt(const std::string& filename);
 error_type canOpenForWriting(const std::string& filename);
 error_type writeVectorToFile(const std::string& filename,
-                             const std::vector<std::string> & lines);
+    const std::vector<std::string>& lines);
 
 #endif //IMPLEMENTATION_UTILS_HPP
