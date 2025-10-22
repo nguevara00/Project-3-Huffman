@@ -26,6 +26,7 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
+    //create the paths
     fs::path dirPath = "input_output";
     fs::path inputFilePath = dirPath / argv[1];
     std::string inputFileBaseName = baseNameWithoutTxt(argv[1]);
@@ -50,7 +51,7 @@ int main(int argc, char* argv[]) {
     if (error_type status; (status = canOpenForWriting(encodedFilePath.string())) != NO_ERROR)
         exitOnError(status, encodedFilePath.string());
 
-    //part 1 : tokenization using Scanner, write tokens to output file
+    //part 1 : tokenization using Scanner, write .tokens
     
     std::vector<std::string> tokens;
     Scanner fileToWords(inputFilePath);
@@ -61,10 +62,9 @@ int main(int argc, char* argv[]) {
     if (error_type status; (status = writeVectorToFile(wordTokensPath.string(), tokens)) != NO_ERROR)
         exitOnError(status, wordTokensPath.string());
 
-
-    // part 2
+    // part 2 : build bst, output statistics, build priority queue, write .freq
     
-    // Build BST
+    // Build BST (with preselected seed for consistency)
 
     std::mt19937 rng(0xC0FFEE);
     std::shuffle(tokens.begin(), tokens.end(), rng);
@@ -117,17 +117,16 @@ int main(int argc, char* argv[]) {
 
     //Part 3: Build the huffman tree, write the header, write the encoded file
 
-    HuffmanTree huffman = HuffmanTree::buildFromCounts(frequencyVector);
+    HuffmanTree ht = HuffmanTree::buildFromCounts(frequencyVector);
 
     std::ofstream headerOut(headerFilePath, std::ios::out | std::ios::trunc);
-    error_type hdrStatus = huffman.writeHeader(headerOut);
-
+    error_type hdrStatus = ht.writeHeader(headerOut);
     headerOut.close();
     if (hdrStatus != NO_ERROR)
         exitOnError(hdrStatus, headerFilePath.string());
 
     std::ofstream encodedOut(encodedFilePath, std::ios::out | std::ios::trunc);
-    error_type encStatus = huffman.encode(tokens, encodedOut, 80);
+    error_type encStatus = ht.encode(tokens, encodedOut, 80);
     encodedOut.close();
     if (encStatus != NO_ERROR)
         exitOnError(encStatus, encodedFilePath.string());

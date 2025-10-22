@@ -2,6 +2,7 @@
 #include <iomanip>
 
 PriorityQueue::PriorityQueue(std::vector<TreeNode*> nodes) {
+    // sort the input into internal data member
 
     for (std::size_t i = 0; i < nodes.size(); i++) {
         TreeNode* currentNode = nodes.at(i);
@@ -22,6 +23,7 @@ bool PriorityQueue::empty() const noexcept {
 }
 
 TreeNode* PriorityQueue::findMin() const noexcept {
+    //minimum will always be the last item in the queue
     if (this->empty()) {
         return nullptr;
     }
@@ -44,6 +46,7 @@ void PriorityQueue::deleteMin() noexcept {
 }
 
 void PriorityQueue::insert(TreeNode* node) {
+    //linear search from the back of the queue and insert in proper priority
     std::size_t i = items_.size();
     while (i > 0 && higherPriority(node, items_.at(i - 1))) {
         i--;
@@ -65,6 +68,7 @@ bool PriorityQueue::higherPriority(const TreeNode* a, const TreeNode* b) noexcep
 }
 
 bool PriorityQueue::isSorted() const {
+    //priority queue should always be sorted, if this returns false there is a problem in the code
     for (std::size_t i = 1; i < items_.size(); ++i) {
         if (!higherPriority(items_[i - 1], items_[i]))
             return false;

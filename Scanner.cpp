@@ -37,7 +37,8 @@ error_type Scanner::tokenize(std::vector<std::string>& words, const std::filesys
 std::string Scanner::readWord(std::istream& in) {
     std::string token;
     char ch;
-
+    
+    //look for the start of the token
     while (in.get(ch)) {
         unsigned char c = static_cast<unsigned char>(ch);
         if (c > 127) continue;
@@ -47,11 +48,12 @@ std::string Scanner::readWord(std::istream& in) {
             break;
         }
     }
-
+    //if a token cannot be found (eof)
     if (token.empty()) {
         return "";
     }
 
+    //consume the rest of the token with internal apostrophes
     while (in.get(ch)) {
         unsigned char c = static_cast<unsigned char>(ch);
         if (c > 127) break; // non-ASCII stops token
