@@ -2,8 +2,49 @@
 #include "PriorityQueue.hpp"
 #include <map>
 
-HuffmanTree HuffmanTree::buildFromCounts(const std::vector<std::pair<std::string, int>>& counts) {
+//completed implementation of big 5 to guarantee correct behavior
 
+//copy constructor
+HuffmanTree::HuffmanTree(const HuffmanTree& other) {
+    if (other.root_ == nullptr) {
+        root_ = nullptr;
+    }
+    else {
+        root_ = copy(other.root_);
+    }
+}
+//assignment operator
+HuffmanTree& HuffmanTree::operator=(const HuffmanTree& other) {
+    if (this != &other) {
+        destroy(root_);
+        if (other.root_ == nullptr) {
+            root_ = nullptr;
+        }
+        else {
+            root_ = copy(other.root_);
+        }
+    }
+    return *this;
+}
+
+//move constructor
+HuffmanTree::HuffmanTree(HuffmanTree&& other) noexcept {
+    root_ = other.root_;
+    other.root_ = nullptr;
+}
+
+//move assignment operator
+HuffmanTree& HuffmanTree::operator=(HuffmanTree&& other) noexcept {
+    if (this != &other) {
+        destroy(root_);
+        root_ = other.root_;
+        other.root_ = nullptr;
+    }
+    return *this;
+}
+
+HuffmanTree HuffmanTree::buildFromCounts(const std::vector<std::pair<std::string, int>>& counts) {
+    //empty input 
     if (counts.empty()) {
         HuffmanTree emptyTree;
         return emptyTree;
@@ -26,13 +67,9 @@ HuffmanTree HuffmanTree::buildFromCounts(const std::vector<std::pair<std::string
 
     //Build the tree's internal nodes
     while (queue.size() > 1) {
-        TreeNode* left = queue.extractMin();
         TreeNode* right = queue.extractMin();
-        if (right->getWord() < left->getWord()) {
-            TreeNode* temp = left;
-            left = right;
-            right = temp;
-        }
+        TreeNode* left = queue.extractMin();
+        
         const int internalNodeFrequency = left->getFrequency() + right->getFrequency();
         std::string internalNodeWord;
         if (left->getWord() < right->getWord()) {
@@ -62,6 +99,7 @@ HuffmanTree HuffmanTree::buildFromCounts(const std::vector<std::pair<std::string
     return result;
 }
 
+// destructor
 // deletes the entire Huffman tree
 HuffmanTree::~HuffmanTree() {
     destroy(root_);
@@ -73,7 +111,6 @@ HuffmanTree::~HuffmanTree() {
 void HuffmanTree::assignCodes(std::vector<std::pair<std::string, std::string>>& out) const {
     std::string prefix;
     assignCodesDFS(root_, prefix, out);
-
 }
 
 // Header writer (pre-order over leaves; "word<space>code"; newline at end).
@@ -143,7 +180,17 @@ error_type HuffmanTree::encode(const std::vector<std::string>& tokens, std::ostr
     return NO_ERROR;
 }
 
-// helpers (decl only; defs in .cpp)
+// helpers
+TreeNode* HuffmanTree::copy(const TreeNode* n) const {
+    if (n == nullptr) {
+        return nullptr;
+    }
+    TreeNode* newNode = new TreeNode(n->getWord(), n->getFrequency());
+    newNode->setLeft(copy(n->getLeft()));
+    newNode->setRight(copy(n->getRight()));
+    return newNode;
+}
+
 void HuffmanTree::destroy(TreeNode* n) noexcept {
     if (n == nullptr) {
         return;

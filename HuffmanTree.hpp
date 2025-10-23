@@ -13,6 +13,12 @@ public:
     HuffmanTree() = default;
     ~HuffmanTree();                         // deletes the entire Huffman tree
 
+    //added implementation of the rest of big 5 to prevent errors when returning tree from buildFromCounts
+    HuffmanTree(const HuffmanTree& other);
+    HuffmanTree& operator=(const HuffmanTree& other);
+    HuffmanTree(HuffmanTree&& other) noexcept;
+    HuffmanTree& operator=(HuffmanTree&& other) noexcept;
+
     // Build a vector of (word, code) pairs by traversing the Huffman tree
     // (left=0, right=1; visit left before right). 
     void assignCodes(std::vector<std::pair<std::string, std::string>>& out) const;
@@ -36,6 +42,7 @@ private:
         std::vector<std::pair<std::string, std::string>>& out);
     static void writeHeaderPreorder(const TreeNode* n, std::ostream& os,
         std::string& prefix);
+    TreeNode* copy(const TreeNode* n) const;
 };
 
 #endif // HUFFMAN_TREE_HPP

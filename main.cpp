@@ -9,7 +9,6 @@
 #include <filesystem>
 #include <string>
 #include <vector>
-#include <random>
 
 #include "Scanner.hpp"
 #include "utils.hpp"
@@ -64,10 +63,7 @@ int main(int argc, char* argv[]) {
 
     // part 2 : build bst, output statistics, build priority queue, write .freq
     
-    // Build BST (with preselected seed for consistency)
-
-    std::mt19937 rng(0xC0FFEE);
-    std::shuffle(tokens.begin(), tokens.end(), rng);
+    // Build BST
 
     BinSearchTree bst;
     bst.bulkInsert(tokens);
