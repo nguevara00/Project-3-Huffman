@@ -50,12 +50,15 @@ void BinSearchTree::destroy(TreeNode* node) noexcept {
 TreeNode* BinSearchTree::insertHelper(TreeNode* node, const std::string& word) {
     if (node == nullptr)
         return new TreeNode(word);
-    if (word < node->getWord())
+    if (word < node->getWord()) {
         node->setLeft(insertHelper(node->getLeft(), word));
-    else if (word > node->getWord())
+    }
+    else if (word > node->getWord()) {
         node->setRight(insertHelper(node->getRight(), word));
-    else
+    }
+    else {
         node->setFrequency(node->getFrequency() + 1);
+        }
     return node;
     }
 

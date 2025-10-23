@@ -67,8 +67,8 @@ HuffmanTree HuffmanTree::buildFromCounts(const std::vector<std::pair<std::string
 
     //Build the tree's internal nodes
     while (queue.size() > 1) {
-        TreeNode* right = queue.extractMin();
         TreeNode* left = queue.extractMin();
+        TreeNode* right = queue.extractMin();
         
         const int internalNodeFrequency = left->getFrequency() + right->getFrequency();
         std::string internalNodeWord;
