@@ -116,7 +116,5 @@ int main(int argc, char* argv[]) {
     if (error_type status; (status = ht.encode(tokens, encodedOut, 80)) != NO_ERROR)
         exitOnError(status, encodedFilePath.string());
   
-
-
     return 0;
 }
