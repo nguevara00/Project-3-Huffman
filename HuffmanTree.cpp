@@ -100,7 +100,6 @@ HuffmanTree HuffmanTree::buildFromCounts(const std::vector<std::pair<std::string
 }
 
 // destructor
-// deletes the entire Huffman tree
 HuffmanTree::~HuffmanTree() {
     destroy(root_);
     root_ = nullptr;
@@ -115,16 +114,14 @@ void HuffmanTree::assignCodes(std::vector<std::pair<std::string, std::string>>& 
 
 // Header writer (pre-order over leaves; "word<space>code"; newline at end).
 error_type HuffmanTree::writeHeader(std::ostream& os) const {
-    if (!os.good()) {
+    if (!os.good())
         return UNABLE_TO_OPEN_FILE_FOR_WRITING;
-    }
 
     std::string prefix;
     writeHeaderPreorder(root_, os, prefix);
 
-    if (os.fail()) {
+    if (os.fail())
         return FAILED_TO_WRITE_FILE;
-    }
     return NO_ERROR;
 }
 
@@ -132,9 +129,8 @@ error_type HuffmanTree::writeHeader(std::ostream& os) const {
 // Writes ASCII '0'/'1' and wraps lines to wrap_cols (80 by default).
 error_type HuffmanTree::encode(const std::vector<std::string>& tokens, std::ostream& os_bits, int wrap_cols) const {
     if (root_ == nullptr) {
-        if (tokens.empty()) {
+        if (tokens.empty())
             return NO_ERROR;
-        }
         return UNABLE_TO_OPEN_FILE_FOR_WRITING;
     }
 
@@ -146,18 +142,15 @@ error_type HuffmanTree::encode(const std::vector<std::string>& tokens, std::ostr
         codeMap[codePairs.at(i).first] = codePairs.at(i).second;
     }
 
-    if (!os_bits.good()) {
+    if (!os_bits.good())
         return UNABLE_TO_OPEN_FILE_FOR_WRITING;
-    }
 
     std::string currentLine;
     for (std::size_t i = 0; i < tokens.size(); ++i) {
         const std::string& token = tokens.at(i);
-        
 
-        if (codeMap.find(token) == codeMap.end()) {
+        if (codeMap.find(token) == codeMap.end())
             return FAILED_TO_WRITE_FILE;
-        }
 
         const std::string& code = codeMap.at(token);
         for (std::size_t j = 0; j < code.size(); ++j) {
@@ -169,22 +162,20 @@ error_type HuffmanTree::encode(const std::vector<std::string>& tokens, std::ostr
         }
     }
 
-    if (!currentLine.empty()) {
+    if (!currentLine.empty())
         os_bits << currentLine << std::endl;
-    }
 
-    if (os_bits.fail()) {
+    if (os_bits.fail())
         return FAILED_TO_WRITE_FILE;
-    }
 
     return NO_ERROR;
 }
 
 // helpers
 TreeNode* HuffmanTree::copy(const TreeNode* n) const {
-    if (n == nullptr) {
+    if (n == nullptr)
         return nullptr;
-    }
+
     TreeNode* newNode = new TreeNode(n->getWord(), n->getFrequency());
     newNode->setLeft(copy(n->getLeft()));
     newNode->setRight(copy(n->getRight()));
@@ -192,9 +183,8 @@ TreeNode* HuffmanTree::copy(const TreeNode* n) const {
 }
 
 void HuffmanTree::destroy(TreeNode* n) noexcept {
-    if (n == nullptr) {
+    if (n == nullptr)
         return;
-    }
 
     destroy(n->getLeft());
     destroy(n->getRight());
@@ -202,9 +192,8 @@ void HuffmanTree::destroy(TreeNode* n) noexcept {
 }
 
 void HuffmanTree::assignCodesDFS(const TreeNode* n, std::string& prefix, std::vector<std::pair<std::string, std::string>>& out) {
-    if (n == nullptr) {
+    if (n == nullptr)
         return;
-    }
 
     //if the node is a leaf, record its code
     if (n->getLeft() == nullptr && n->getRight() == nullptr) {
@@ -231,9 +220,8 @@ void HuffmanTree::assignCodesDFS(const TreeNode* n, std::string& prefix, std::ve
 }
 
 void HuffmanTree::writeHeaderPreorder(const TreeNode* n, std::ostream& os, std::string& prefix) {
-    if (n == nullptr) {
+    if (n == nullptr)
         return;
-    }
 
     if (n->getLeft() == nullptr && n->getRight() == nullptr) {
         std::string code;

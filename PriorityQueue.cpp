@@ -24,25 +24,22 @@ bool PriorityQueue::empty() const noexcept {
 
 TreeNode* PriorityQueue::findMin() const noexcept {
     //minimum will always be the last item in the queue
-    if (this->empty()) {
+    if (this->empty())
         return nullptr;
-    }
     return items_.back();
 }
 
 TreeNode* PriorityQueue::extractMin() noexcept {
-    if (this->empty()) {
+    if (this->empty())
         return nullptr;
-    }
     TreeNode* minNode = items_.back();
     items_.pop_back();
     return minNode;
 }
 
 void PriorityQueue::deleteMin() noexcept {
-    if (!this->empty()) {
+    if (!this->empty())
         items_.pop_back();
-    }
 }
 
 void PriorityQueue::insert(TreeNode* node) {

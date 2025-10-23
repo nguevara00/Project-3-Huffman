@@ -21,9 +21,8 @@ void BinSearchTree::bulkInsert(const std::vector<std::string>& words) {
 
 [[nodiscard]] std::optional<int> BinSearchTree::countOf(std::string_view word) const noexcept {
     const TreeNode* node = findNode(root_, word);
-    if (node == nullptr) {
+    if (node == nullptr)
         return std::nullopt;
-    }
     return node->getFrequency();
 }
 

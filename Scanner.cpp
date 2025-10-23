@@ -4,18 +4,18 @@
 #include <cctype>
 #include "utils.hpp"
 
-Scanner::Scanner(std::filesystem::path inputPath)
-    : inputPath_(std::move(inputPath)) {}
+Scanner::Scanner(std::filesystem::path inputPath) {
+    inputPath_ = inputPath;
+}
 
+//make tokens of words from the input file, put them in tokens vector
 error_type Scanner::tokenize(std::vector<std::string>& words) {
-    if (error_type status = regularFileExistsAndIsAvailable(inputPath_.string()); status != NO_ERROR) {
+    if (error_type status = regularFileExistsAndIsAvailable(inputPath_.string()); status != NO_ERROR)
         return status;
-    }
 
-    std::ifstream inFile(inputPath_.string());
-    if (!inFile.is_open()) {
+    std::ifstream inFile(inputPath_);
+    if (!inFile.is_open())
         return UNABLE_TO_OPEN_FILE;
-    }
 
     std::string token;
     while (!(token = readWord(inFile)).empty()) {
@@ -26,19 +26,20 @@ error_type Scanner::tokenize(std::vector<std::string>& words) {
     return NO_ERROR;
 }
 
+//tokenize the input file directly into an output file
 error_type Scanner::tokenize(std::vector<std::string>& words, const std::filesystem::path& outputFile) {
     error_type status = tokenize(words);
-    if (status != NO_ERROR) {
+    if (status != NO_ERROR)
         return status;
-    }
     return writeVectorToFile(outputFile.string(), words);
 }
 
+//make a token
 std::string Scanner::readWord(std::istream& in) {
     std::string token;
     char ch;
     
-    //look for the start of the token
+    //look for the start of the token, ignore non-ascii
     while (in.get(ch)) {
         unsigned char c = static_cast<unsigned char>(ch);
         if (c > 127) continue;
@@ -48,20 +49,19 @@ std::string Scanner::readWord(std::istream& in) {
             break;
         }
     }
-    //if a token cannot be found (eof)
-    if (token.empty()) {
+    //if a token was not found (eof)
+    if (token.empty())
         return "";
-    }
 
-    //consume the rest of the token with internal apostrophes
+    // a token was started, consume the rest of the token with internal apostrophes
     while (in.get(ch)) {
         unsigned char c = static_cast<unsigned char>(ch);
-        if (c > 127) break; // non-ASCII stops token
+        if (c > 127) break; // non-ascii stops token
         ch = std::tolower(c);
 
-        if (ch >= 'a' && ch <= 'z') {
+        if (ch >= 'a' && ch <= 'z')
             token += ch;
-        }
+        
         else if (ch == '\'' && !token.empty()) {
             char nextCh = in.peek();
             if (nextCh != EOF && std::isalpha(static_cast<unsigned char>(nextCh))) {
@@ -77,9 +77,8 @@ std::string Scanner::readWord(std::istream& in) {
     }
 
     // Drop trailing apostrophe if any
-    if (!token.empty() && token.back() == '\'') {
+    if (!token.empty() && token.back() == '\'')
         token.pop_back();
-    }
 
     return token;
 }

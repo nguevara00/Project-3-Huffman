@@ -26,10 +26,10 @@ int main(int argc, char* argv[]) {
     }
 
     //create the paths
-    fs::path dirPath = "input_output";
-    fs::path inputFilePath = dirPath / argv[1];
     std::string inputFileBaseName = baseNameWithoutTxt(argv[1]);
 
+    fs::path dirPath = "input_output";
+    fs::path inputFilePath = dirPath / argv[1];
     fs::path wordTokensPath = dirPath / (inputFileBaseName + ".tokens");
     fs::path freqFilePath = dirPath / (inputFileBaseName + ".freq");
     fs::path headerFilePath = dirPath / (inputFileBaseName + ".hdr");
@@ -64,41 +64,34 @@ int main(int argc, char* argv[]) {
     // part 2 : build bst, output statistics, build priority queue, write .freq
     
     // Build BST
-
     BinSearchTree bst;
     bst.bulkInsert(tokens);
-
-    // Collect frequencies
-    std::vector<std::pair<std::string, int>> frequencyVector;
-    bst.inorderCollect(frequencyVector);
-
-    int minFreq = 0;
-    int maxFreq = 0;
-    if (!frequencyVector.empty()) {
-        minFreq = frequencyVector.at(0).second;
-        maxFreq = frequencyVector.at(0).second;
-        for (std::size_t i = 1; i < frequencyVector.size(); ++i) {
-            if (frequencyVector.at(i).second < minFreq) minFreq = frequencyVector.at(i).second;
-            if (frequencyVector.at(i).second > maxFreq) maxFreq = frequencyVector.at(i).second;
-        }
-    }
+    std::vector<std::pair<std::string, int>> pairVector;
+    bst.inorderCollect(pairVector);
 
     // Print BST statistics
+    int minFreq = 0;
+    int maxFreq = 0;
+    if (!pairVector.empty()) {
+        minFreq = pairVector.at(0).second;
+        maxFreq = pairVector.at(0).second;
+        for (std::size_t i = 1; i < pairVector.size(); ++i) {
+            if (pairVector.at(i).second < minFreq) minFreq = pairVector.at(i).second;
+            if (pairVector.at(i).second > maxFreq) maxFreq = pairVector.at(i).second;
+        }
+    }
     std::cout << "BST height: " << bst.height() << std::endl;
     std::cout << "BST unique words: " << bst.size() << std::endl;
     std::cout << "Total tokens: " << tokens.size() << std::endl;
     std::cout << "Min frequency: " << minFreq << std::endl;
     std::cout << "Max frequency: " << maxFreq << std::endl;
     
-    //build priority queue
-    std::vector<TreeNode*> frequencyNodes;
-
-    //create the new tree nodes in frequencyNodes vector
-    for (std::size_t i = 0; i < frequencyVector.size(); i++) {
-        frequencyNodes.push_back(new TreeNode(frequencyVector.at(i).first, frequencyVector.at(i).second));
+    //using the vector of word/frequency pairs from the BST, create a vector of TreeNodes and use them to build the priority queue
+    std::vector<TreeNode*> treeNodes;
+    for (std::size_t i = 0; i < pairVector.size(); i++) {
+        treeNodes.push_back(new TreeNode(pairVector.at(i).first, pairVector.at(i).second));
     }
-
-    PriorityQueue pq(frequencyNodes);
+    PriorityQueue pq(treeNodes);
 
     //write frequencies to output.freq
 
@@ -106,26 +99,24 @@ int main(int argc, char* argv[]) {
     pq.print(frequencyOutput);
     frequencyOutput.close();
     
-    //delete the tree nodes created in frequencyNodes vector 
-    for (std::size_t i = 0; i < frequencyNodes.size(); i++) {
-        delete frequencyNodes.at(i);
+    //delete the tree nodes created in treeNodes vector 
+    for (std::size_t i = 0; i < treeNodes.size(); i++) {
+        delete treeNodes.at(i);
     }
 
     //Part 3: Build the huffman tree, write the header, write the encoded file
 
-    HuffmanTree ht = HuffmanTree::buildFromCounts(frequencyVector);
+    HuffmanTree ht = HuffmanTree::buildFromCounts(pairVector);
 
     std::ofstream headerOut(headerFilePath, std::ios::out | std::ios::trunc);
-    error_type hdrStatus = ht.writeHeader(headerOut);
-    headerOut.close();
-    if (hdrStatus != NO_ERROR)
-        exitOnError(hdrStatus, headerFilePath.string());
+    if (error_type status; (status = ht.writeHeader(headerOut)) != NO_ERROR)
+        exitOnError(status, headerFilePath.string());
 
     std::ofstream encodedOut(encodedFilePath, std::ios::out | std::ios::trunc);
-    error_type encStatus = ht.encode(tokens, encodedOut, 80);
-    encodedOut.close();
-    if (encStatus != NO_ERROR)
-        exitOnError(encStatus, encodedFilePath.string());
+    if (error_type status; (status = ht.encode(tokens, encodedOut, 80)) != NO_ERROR)
+        exitOnError(status, encodedFilePath.string());
+  
+
 
     return 0;
 }
